@@ -1,6 +1,7 @@
 import requests
 import csv
 from lcu_driver import Connector
+import sys
 
 print("fetching skin metadata...")
 skins_metadata = requests.get(
@@ -65,12 +66,14 @@ async def connect(connection):
 
 
     # Stoutput
-    with open("owned_skins.csv", "w", newline="", encoding="utf-8") as f:
+    output_path = sys.argv[1] if len(sys.argv) > 1 else "owned_skins.csv"
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["SummonerName", "Champion", "Skin", "SkinLine"])
         writer.writerows(rows)
 
-    print(f"wrote {len(rows)} rows to owned_skins.csv")
+    print(f"wrote {len(rows)} rows to {output_path}")
     await connector.stop()
 
 connector.start()
